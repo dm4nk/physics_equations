@@ -2,7 +2,7 @@ import math
 from scipy.integrate import quad
 from Constants import Constants
 
-p = Constants.H.value / Constants.L.value
+p = Constants.H.value * Constants.L.value
 L = Constants.L.value
 D = Constants.D.value
 U_c = Constants.U_c.value
