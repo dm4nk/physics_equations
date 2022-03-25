@@ -6,12 +6,14 @@ from RootFinder import RootFinder
 from func import func, u
 
 T = Constants.D.value
+L = Constants.L.value
 
-if __name__ == '__main__':
+
+def build_plots():
     r = RootFinder(0, 313, 0.001)
     mu_array = r.find(func)
 
-    x = numpy.linspace(150, 12, 100)
+    x = numpy.linspace(0, L, 500)
 
     y1 = [u(_x, 0, mu_array) for _x in x]
     y2 = [u(_x, T / 3, mu_array) for _x in x]
@@ -25,7 +27,9 @@ if __name__ == '__main__':
 
     plt.xlabel("t")
     plt.ylabel("U(mu, t)")
-
     plt.legend()
-
     plt.show()
+
+
+if __name__ == '__main__':
+    build_plots()
