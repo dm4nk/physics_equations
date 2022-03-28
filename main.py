@@ -1,3 +1,5 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy
 
@@ -9,9 +11,11 @@ T = Constants.D.value
 L = Constants.L.value
 
 
-def build_plots():
-    r = RootFinder(0, 313, 0.001)
-    mu_array = r.find(func)
+def mian():
+    # r = RootFinder(0, 313, 0.001)
+    # mu_array = r.find(func)
+
+    mu_array = [i * math.pi for i in range(1, 101)]
 
     x = numpy.linspace(0, L, 500)
 
@@ -32,4 +36,4 @@ def build_plots():
 
 
 if __name__ == '__main__':
-    build_plots()
+    mian()

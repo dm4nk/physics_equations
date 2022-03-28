@@ -9,7 +9,7 @@ U_c = Constants.U_c.value
 
 
 def func(mu):
-    return math.tan(mu) - p / mu
+    return math.sin(mu)
 
 
 def psi(x):
@@ -22,9 +22,9 @@ def u(x, t, mu_array):
     for mu_k in mu_array:
         _sum += \
             (mu_k ** 2 + p ** 2) / \
-            (p * (p - 1) + mu_k ** 2) * \
+            (p * (p + 1) + mu_k ** 2) * \
             math.e ** (-D * mu_k ** 2 * t / L ** 2) * \
-            math.sin(mu_k * x / L) * \
-            quad(lambda _x: psi(_x) * math.sin(mu_k * _x / L), 0, L)[0]
+            math.cos(mu_k * x / L) * \
+            quad(lambda _x: psi(_x) * math.cos(mu_k * _x / L), 0, L)[0]
 
     return 2 / L * _sum + U_c
