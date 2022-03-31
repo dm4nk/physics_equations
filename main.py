@@ -4,8 +4,9 @@ import matplotlib.pyplot as plt
 import numpy
 
 from Constants import Constants
-from RootFinder import RootFinder
-from func import func, u
+# from RootFinder import RootFinder
+from model.model import func, u
+from view.app import app
 
 T = Constants.D.value
 L = Constants.L.value
@@ -36,4 +37,5 @@ def mian():
 
 
 if __name__ == '__main__':
-    mian()
+    # mian()
+    app.run(debug=True)

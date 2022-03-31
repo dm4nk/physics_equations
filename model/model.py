@@ -8,15 +8,15 @@ D = Constants.D.value
 U_c = Constants.U_c.value
 
 
-def func(mu):
+def func(mu: float) -> float:
     return math.sin(mu)
 
 
-def psi(x):
+def psi(x: float) -> float:
     return 0 if x < L / 4 or x > 3 / 4 * L else 1
 
 
-def u(x, t, mu_array):
+def u(x: float, t: float, mu_array: []) -> float:
     _sum = 0.
 
     for mu_k in mu_array:
