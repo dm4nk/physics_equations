@@ -25,6 +25,6 @@ def u(x, t, mu_array):
             (p * (p + 1) + mu_k ** 2) * \
             math.e ** (-D * mu_k ** 2 * t / L ** 2) * \
             math.cos(mu_k * x / L) * \
-            quad(lambda _x: psi(_x) * math.cos(mu_k * _x / L), 0, L)[0]
+            quad(lambda _x: (psi(_x) + U_c) * math.cos(mu_k * _x / L), 0, L)[0]
 
     return 2 / L * _sum + U_c
