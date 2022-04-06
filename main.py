@@ -1,11 +1,8 @@
 import math
-from re import T
-
 import matplotlib.pyplot as plt
 import numpy
 
-
-D = 3
+D = 0.06
 H = 0
 U_c = 0
 L = 12
@@ -17,12 +14,13 @@ def u(x, t, mu_array):
 
     for mu_k in mu_array:
         _sum += \
-            2 / mu_k * \
+            1 / mu_k * \
             math.e ** (-D * mu_k ** 2 * t / L ** 2) * \
             math.cos(mu_k * x / L) * \
-            (math.sin(3 * mu_k / 4) - math.sin(mu_k / 4))
+            math.sin(mu_k / 4) * \
+            math.cos(mu_k / 2)
 
-    return _sum
+    return 4 * _sum
 
 
 def mian():
@@ -43,6 +41,7 @@ def mian():
     plt.xlabel("x")
     plt.ylabel("U(x, t)")
     plt.legend()
+
     plt.show()
 
 
