@@ -1,20 +1,31 @@
 import math
+from re import T
 
 import matplotlib.pyplot as plt
 import numpy
 
-from Constants import Constants
-from RootFinder import RootFinder
-from func import func, u
 
-T = Constants.D.value
-L = Constants.L.value
+D = 3
+H = 0
+U_c = 0
+L = 12
+T = 150
+
+
+def u(x, t, mu_array):
+    _sum = 0
+
+    for mu_k in mu_array:
+        _sum += \
+            2 / mu_k * \
+            math.e ** (-D * mu_k ** 2 * t / L ** 2) * \
+            math.cos(mu_k * x / L) * \
+            (math.sin(3 * mu_k / 4) - math.sin(mu_k / 4))
+
+    return _sum
 
 
 def mian():
-    # r = RootFinder(0, 313, 0.001)
-    # mu_array = r.find(func)
-
     mu_array = [i * math.pi for i in range(1, 101)]
 
     x = numpy.linspace(0, L, 500)
@@ -29,8 +40,8 @@ def mian():
     plt.plot(x, y3, label="t = 2*T/3")
     plt.plot(x, y4, label="t = T")
 
-    plt.xlabel("t")
-    plt.ylabel("U(mu, t)")
+    plt.xlabel("x")
+    plt.ylabel("U(x, t)")
     plt.legend()
     plt.show()
 
