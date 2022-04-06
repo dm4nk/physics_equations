@@ -1,4 +1,6 @@
 import math
+import sys
+
 import matplotlib.pyplot as plt
 import numpy
 
@@ -24,7 +26,8 @@ def u(x, t, mu_array):
 
 
 def mian():
-    mu_array = [i * math.pi for i in range(1, 101)]
+    mu_array = [i * math.pi for i in range(1, 100)]
+    mu_array.insert(0, sys.float_info.min)
 
     x = numpy.linspace(0, L, 500)
 
