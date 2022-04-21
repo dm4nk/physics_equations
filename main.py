@@ -13,7 +13,14 @@ MINIMAL_T = 0.0001  # approximate minimal T, as it can't be 0, and it should be 
 EPS = 0.000005
 
 
-def u(x: float, t: float, mu_array) -> float:
+def u(x: float, t: float, mu_array: [float]) -> float:
+    """
+    Calculates Fourier sum, also known as v(x, t).
+    :param x: x
+    :param t: t
+    :param mu_array: array of roots of sin(math.pi * n ) = 0
+    :return:
+    """
     _sum = 0
 
     for mu_k in mu_array:
@@ -28,10 +35,23 @@ def u(x: float, t: float, mu_array) -> float:
 
 
 def f(n: int, t: float) -> float:
+    """
+    Calculates F(n).
+    :param n: n
+    :param t: t
+    :return: F(n)
+    """
     return (2 * math.e ** (-D * math.pi ** 2 * t * n ** 2 / L ** 2) * L ** 2) / (math.pi ** 3 * n ** 2 * t)
 
 
 def estimate_n_for(epsilon: float, t_array: [float]) -> [int]:
+    """
+    Estimates number of elements in fourier sum for each t in t_array.
+    Also known as N(eps)
+    :param epsilon: precision
+    :param t_array: array of necessary times
+    :return: array of numer of elements in fourier sum accordingly for each t
+    """
     i = 1
     n_array = []
     for single_t in t_array:
@@ -42,11 +62,16 @@ def estimate_n_for(epsilon: float, t_array: [float]) -> [int]:
     return n_array
 
 
-def build_plot(x: [float], y_array: [[float]]) -> None:
-    plt.plot(x, y_array[0], label="t = 0.0001")
-    plt.plot(x, y_array[1], label="t = T/3")
-    plt.plot(x, y_array[2], label="t = 2*T/3")
-    plt.plot(x, y_array[3], label="t = T")
+def build_plot(x: [float], y_array: [[float]], t_array: [float]) -> None:
+    """
+    Builds plot for given parameters
+    :param x: x
+    :param y_array: array of v(x, t) accordingly to given x
+    :param t_array: t
+    """
+    for y, t in zip(y_array, t_array):
+        plt.plot(x, y, label="t = " + str(t))
+
     plt.xlabel("x")
     plt.ylabel("U(x, t)")
     plt.legend()
@@ -73,7 +98,7 @@ def main():
     for n, t in zip(n_array, t_array):
         y_array.append([u(_x, t, mu_array[:n]) for _x in x])
 
-    build_plot(x, y_array)
+    build_plot(x, y_array, t_array)
 
 
 if __name__ == '__main__':
