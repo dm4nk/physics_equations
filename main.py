@@ -8,10 +8,12 @@ D = 0.06
 H = 0
 U_c = 0
 L = 12
-T = 150
+T = 150.
+MINIMAL_T = 0.0001  # approximate minimal T, as it can't be 0, and it should be quite big for fast calculations
+EPS = 0.000005
 
 
-def u(x, t, mu_array):
+def u(x: float, t: float, mu_array) -> float:
     _sum = 0
 
     for mu_k in mu_array:
@@ -25,28 +27,54 @@ def u(x, t, mu_array):
     return 4 * _sum
 
 
-def mian():
-    mu_array = [i * math.pi for i in range(1, 100)]
-    mu_array.insert(0, sys.float_info.min)
+def f(n: int, t: float) -> float:
+    return (2 * math.e ** (-D * math.pi ** 2 * t * n ** 2 / L ** 2) * L ** 2) / (math.pi ** 3 * n ** 2 * t)
 
-    x = numpy.linspace(0, L, 500)
 
-    y1 = [u(_x, 0, mu_array) for _x in x]
-    y2 = [u(_x, T / 3, mu_array) for _x in x]
-    y3 = [u(_x, 2 * T / 3, mu_array) for _x in x]
-    y4 = [u(_x, T, mu_array) for _x in x]
+def estimate_n_for(epsilon: float, t_array: [float]) -> [int]:
+    i = 1
+    n_array = []
+    for single_t in t_array:
+        while f(i, single_t) > epsilon:
+            i += 1
+        n_array.append(i)
+        i = 1
+    return n_array
 
-    plt.plot(x, y1, label="t = 0")
-    plt.plot(x, y2, label="t = T/3")
-    plt.plot(x, y3, label="t = 2*T/3")
-    plt.plot(x, y4, label="t = T")
 
+def build_plot(x: [float], y_array: [[float]]) -> None:
+    plt.plot(x, y_array[0], label="t = 0.0001")
+    plt.plot(x, y_array[1], label="t = T/3")
+    plt.plot(x, y_array[2], label="t = 2*T/3")
+    plt.plot(x, y_array[3], label="t = T")
     plt.xlabel("x")
     plt.ylabel("U(x, t)")
     plt.legend()
-
     plt.show()
 
 
+def main():
+    # estimate number of elements in fourier's sum
+    t_array = [MINIMAL_T, T / 3, 2 * T / 3, T]
+    n_array = estimate_n_for(EPS, t_array)
+    print(n_array)
+
+    # array of roots of sin(math.pi * n ) = 0
+    mu_array = [i * math.pi for i in range(1, max(n_array))]
+
+    # actually, first element of array should be 0, but as further in program division by 0 occurs, minimal float is
+    # inserted
+    mu_array.insert(0, sys.float_info.min)
+
+    x = numpy.linspace(0, L, 500)
+    y_array = []
+
+    # for each t mu_array is reduced to satisfy given precision
+    for n, t in zip(n_array, t_array):
+        y_array.append([u(_x, t, mu_array[:n]) for _x in x])
+
+    build_plot(x, y_array)
+
+
 if __name__ == '__main__':
-    mian()
+    main()
