@@ -72,6 +72,7 @@ def build_plot(x: [float], y_array: [[float]], t_array: [float]) -> None:
     for y, t in zip(y_array, t_array):
         plt.plot(x, y, label="t = " + str(t))
 
+    plt.title("Precision = " + str(EPS))
     plt.xlabel("x")
     plt.ylabel("U(x, t)")
     plt.legend()
