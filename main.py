@@ -86,7 +86,7 @@ def main():
     print("for T - N\n" + " | ".join(str(t) + " - " + str(n) for n, t in zip(n_array, t_array)))
 
     # array of roots of sin(math.pi * n ) = 0
-    mu_array = [i * math.pi for i in range(1, max(n_array))]
+    mu_array = [i * math.pi for i in range(1, max(n_array)-1)]
 
     # actually, first element of array should be 0, but as further in program division by 0 occurs, minimal float is
     # inserted
