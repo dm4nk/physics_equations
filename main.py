@@ -57,7 +57,7 @@ def main():
     # estimate number of elements in fourier's sum
     t_array = [MINIMAL_T, T / 3, 2 * T / 3, T]
     n_array = estimate_n_for(EPS, t_array)
-    print(n_array)
+    print("for T - N\n" + " | ".join(str(t) + " - " + str(n) for n, t in zip(n_array, t_array)))
 
     # array of roots of sin(math.pi * n ) = 0
     mu_array = [i * math.pi for i in range(1, max(n_array))]
