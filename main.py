@@ -105,23 +105,21 @@ def build_plot(x: [float], y_array: [[float]], t_array: [float]) -> None:
     plt.show()
 
 
-def estimate_experimental_n(epsilon: float, x_array: [float], t: float, mu_array: [float]) -> int:
+def estimate_experimental_n(epsilon: float, x_array: [float], t: float, mu_array: [float], n: int) -> int:
     """
     Experimentally estimates number of elements of Fourier's sum needed to satisfy given precision.
+    :param n: estimated with N(eps) n
     :param t: t
     :param epsilon: precision
     :param x_array: x
     :param mu_array: roots of array of roots of sin(math.pi * n ) = 0
     :return: array of numer of elements in fourier sum accordingly for each t
     """
-    i = 0
-    j = 4
-    while True:
-        i += 1
-        j += 1
-        ans = [abs(u(x, t, mu_array[i:j])) < epsilon for x in x_array]
-        if all(ans):
-            return i
+    i = n
+    while all([abs(u(x, t, mu_array[i - 1:i])) < epsilon for x in x_array]):
+        i -= 1
+
+    return i
 
 
 def print_fourier_sum_with_all_mu(x: float, t: float, mu_array: [float]):
@@ -174,11 +172,12 @@ def main():
     n_exp = ["N_exp: "]
     for epsilon in EPS_ARRAY:
         n_min.append(str(estimate_n_min_for_single_t(epsilon, T_CHECK)))
-        n_exp.append(str(estimate_experimental_n(epsilon, x, T_CHECK, mu_array)))
+        n_exp.append(
+            str(estimate_experimental_n(epsilon, x, T_CHECK, mu_array, estimate_n_min_for_single_t(epsilon, T_CHECK))))
 
     print_matrix([eps_array, n_min, n_exp])
 
-    build_plot(x, y_array, t_array)
+    # build_plot(x, y_array, t_array)
 
 
 if __name__ == '__main__':
