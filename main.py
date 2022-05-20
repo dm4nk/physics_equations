@@ -88,21 +88,25 @@ def estimate_n_min(epsilon: float, t_array: [float]) -> [int]:
     return n_array
 
 
-def build_plot(x: [float], y_array: [[float]], t_array: [float]) -> None:
+def build_plot(x: [float], y: [[float]], sections: [float], x_label: [str], y_label: [str], sections_label: [str]) \
+        -> None:
     """
     Builds plot for given parameters
+    :param sections_label:
+    :param y_label:
+    :param x_label:
     :param x: x
-    :param y_array: array of v(x, t) accordingly to given x
-    :param t_array: t
+    :param y: y
+    :param sections: sections
     """
-    for y, t in zip(y_array, t_array):
-        plt.plot(x, y, label="t = " + str(t))
-
+    fig = plt.figure()
+    ax = fig.add_subplot()
+    for y, section in zip(y, sections):
+        ax.plot(x, y, label=sections_label + str(section))
     plt.title("Precision = " + str(EPS))
-    plt.xlabel("x")
-    plt.ylabel("U(x, t)")
-    plt.legend()
-    plt.show()
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    ax.legend()
 
 
 def estimate_experimental_n(epsilon: float, x_array: [float], t: float, mu_array: [float], n: int) -> int:
@@ -149,20 +153,17 @@ def print_matrix(matrix):
 
 def main():
     # estimate number of elements in fourier's sum
-    t_array = [MINIMAL_T, T / 3, 2 * T / 3, T]
-    n_array = estimate_n_min(EPS, t_array)
+    t_values = [MINIMAL_T, T / 3, 2 * T / 3, T]
+    x_values = [0, L/2, 2*L/3, L]
+    n_array = estimate_n_min(EPS, t_values)
 
     print("With given precision: " + str(EPS))
-    print_matrix([["T: "] + t_array, ["N: "] + n_array])
+    print_matrix([["T: "] + t_values, ["N: "] + n_array])
 
     mu_array = calculate_mu_array_with_length(max(n_array))
 
     x = numpy.linspace(0, L, 500)
-    y_array = []
-
-    # for each t mu_array is reduced to satisfy given precision
-    for n, t in zip(n_array, t_array):
-        y_array.append([u(_x, t, mu_array[:n]) for _x in x])
+    t = numpy.linspace(0, T, 500)
 
     # check difference between n found by estimate_n_min and experimental one
     print("For t = " + str(T_CHECK))
@@ -171,13 +172,26 @@ def main():
     n_min = ["N_min: "]
     n_exp = ["N_exp: "]
     for epsilon in EPS_ARRAY:
-        n_min.append(str(estimate_n_min_for_single_t(epsilon, T_CHECK)))
+        current_n_min = estimate_n_min_for_single_t(epsilon, T_CHECK)
+        n_min.append(str(current_n_min))
         n_exp.append(
-            str(estimate_experimental_n(epsilon, x, T_CHECK, mu_array, estimate_n_min_for_single_t(epsilon, T_CHECK))))
+            str(estimate_experimental_n(epsilon, x, T_CHECK, mu_array, current_n_min)))
 
     print_matrix([eps_array, n_min, n_exp])
 
-    # build_plot(x, y_array, t_array)
+    # for each t, x mu_array is reduced to satisfy given precision
+    y_array = []
+    for n, _t in zip(n_array, t_values):
+        y_array.append([u(_x, _t, mu_array[:n]) for _x in x])
+
+    build_plot(x, y_array, t_values, x_label="x", y_label="U(x, t)", sections_label="t = ")
+
+    t_array = []
+    for n, _x in zip(n_array, x_values):
+        t_array.append([u(_x, _t, mu_array[:n]) for _t in t])
+
+    build_plot(t, t_array, x_values, x_label="t", y_label="U(x, t)", sections_label="x = ")
+    plt.show()
 
 
 if __name__ == '__main__':
