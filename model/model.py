@@ -41,6 +41,32 @@ def build_plot(x: [float], y_array: [[float]], sections: [float], x_label: [str]
     :param sections: sections
     """
     fig = go.Figure()
+    fig.update_layout(
+        xaxis=dict(
+            showgrid=False,
+            showticklabels=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside'
+        ),
+        yaxis=dict(
+            showgrid=False,
+            zeroline=False,
+            showticklabels=True,
+            linecolor='rgb(204, 204, 204)',
+            linewidth=2,
+            ticks='outside'
+        ),
+        autosize=False,
+        margin=dict(
+            autoexpand=True,
+            l=100,
+            r=100,
+            t=110,
+        ),
+        showlegend=True,
+        plot_bgcolor='white'
+    )
     fig.update_layout(xaxis_title=x_label, yaxis_title=y_label)
     for y, section in zip(y_array, sections):
         fig.add_trace(go.Line(x=x, y=y, mode='lines', name=sections_label + str(section)))

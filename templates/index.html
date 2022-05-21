@@ -12,7 +12,7 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
-        function cb(selection) {
+        function cb() {
             console.log('START')
             const d = parseFloat(document.querySelector('#d').value);
             const l = parseInt(document.querySelector('#l').value);
@@ -63,17 +63,17 @@
         <div class="row">
             <div class="col-sm-3">
                 <h2>D</h2><input class="form-control" type="text" value="0.06" id="d" name="d"
-                    onchange="cb(this.value)">
+                    onchange="cb()">
             </div>
             <div class="col-sm-3">
-                <h2>L</h2><input class="form-control" type="text" value="12" id="l" name="l" onchange="cb(this.value)">
+                <h2>L</h2><input class="form-control" type="text" value="12" id="l" name="l" onchange="cb()">
             </div>
             <div class="col-sm-3">
-                <h2>T</h2><input class="form-control" type="text" value="150" id="t" name="t" onchange="cb(this.value)">
+                <h2>T</h2><input class="form-control" type="text" value="150" id="t" name="t" onchange="cb()">
             </div>
             <div class="col-sm-3">
                 <h2>Precision</h2><input class="form-control" type="text" value="0.01" id="e" name="e"
-                    onchange="cb(this.value)">
+                    onchange="cb()">
             </div>
         </div>
     </div>
