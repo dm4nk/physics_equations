@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
 import json
+
 import plotly
+from flask import Flask, render_template, request
 
 from model.model import Model
 
@@ -34,4 +35,4 @@ def gm(d=0.06, l=12, t=150, e=0.01):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

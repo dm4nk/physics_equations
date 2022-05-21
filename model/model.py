@@ -57,7 +57,7 @@ def build_plot(x: [float], y_array: [[float]], sections: [float], x_label: [str]
             linewidth=2,
             ticks='outside'
         ),
-        autosize=False,
+        autosize=True,
         margin=dict(
             autoexpand=True,
             l=100,
@@ -127,7 +127,7 @@ class Model:
         :return: F(n)
         """
         return (2 * self.__L ** 2 * math.e ** (-self.__D * math.pi ** 2 * t * n ** 2 / self.__L ** 2)) / (
-                    self.__D * math.pi ** 3 * n ** 2 * t)
+                self.__D * math.pi ** 3 * n ** 2 * t)
 
     def estimate_n_min_for_single_t(self, epsilon: float, t: float) -> int:
         """
@@ -222,6 +222,5 @@ class Model:
             t_array.append([self.u(_x, _t, mu_array[:n]) for _t in t])
 
         plot2 = build_plot(t, t_array, x_values, x_label="t", y_label="U(x, t)", sections_label="x = ")
-        # plt.show()
 
         return plot1, plot2
