@@ -1,5 +1,4 @@
-import math
-import sys
+from math import pi, sin, cos, e
 
 import matplotlib.pyplot as plt
 import numpy
@@ -10,22 +9,6 @@ U_c = 0
 MINIMAL_T = 0.0001  # approximate minimal T, as it can't be 0, and it should be quite big for fast calculations
 EPS_ARRAY = [0.1, 0.01, 0.001, 0.0001, 10 ** -5, 10 ** -6, 10 ** -7]
 T_CHECK = 1
-
-
-def calculate_mu_array_with_length(n: int) -> [float]:
-    """
-    Calculates roots of equation sin(math.pi * n ) = 0.
-    :param n: required number of roots
-    :return: roots of equation sin(math.pi * n ) = 0
-    """
-    # array of roots of sin(math.pi * n ) = 0
-    mu_array = [i * math.pi for i in range(1, n)]
-
-    # actually, first element of array should be 0, but as further in program division by 0 occurs, minimal float is
-    # inserted
-    mu_array.insert(0, sys.float_info.min)
-
-    return mu_array
 
 
 def build_plot(x: [float], y_array: [[float]], sections: [float], x_label: [str], y_label: [str],
@@ -101,23 +84,23 @@ class Model:
         self.__T = T
         self.__EPS = EPS
 
-    def u(self, x: float, t: float, mu_array: [float]) -> float:
+    def u(self, x: float, t: float, n: int) -> float:
         """
         Calculates Fourier sum, also known as v(x, t).
+        :param n:
         :param x: x
         :param t: t
-        :param mu_array: array of roots of sin(math.pi * n ) = 0
         :return:
         """
         _sum = 0
-        for mu_k in mu_array:
+        for k in range(1, n + 1):
             _sum += \
-                1 / mu_k * \
-                math.e ** (-self.__D * mu_k ** 2 * t / self.__L ** 2) * \
-                math.cos(mu_k * x / self.__L) * \
-                math.sin(mu_k / 4) * \
-                math.cos(mu_k / 2)
-        return 4 * _sum
+                1 / (pi * k) * \
+                e ** (-self.__D * (pi * k) ** 2 * t / self.__L ** 2) * \
+                cos(pi * k * x / self.__L) * \
+                sin(pi * k / 4) * \
+                cos(pi * k / 2)
+        return 4 * _sum + 1/2
 
     def f(self, n: int, t: float) -> float:
         """
@@ -126,8 +109,8 @@ class Model:
         :param t: t
         :return: F(n)
         """
-        return (2 * self.__L ** 2 * math.e ** (-self.__D * math.pi ** 2 * t * n ** 2 / self.__L ** 2)) / (
-                self.__D * math.pi ** 3 * n ** 2 * t)
+        return (2 * self.__L ** 2 * e ** (-self.__D * pi ** 2 * t * n ** 2 / self.__L ** 2)) / (
+                self.__D * pi ** 3 * n ** 2 * t)
 
     def estimate_n_min_for_single_t(self, epsilon: float, t: float) -> int:
         """
@@ -155,32 +138,20 @@ class Model:
 
         return n_array
 
-    def estimate_experimental_n(self, epsilon: float, x_array: [float], t: float, mu_array: [float], n: int) -> int:
+    def estimate_experimental_n(self, epsilon: float, x_array: [float], t: float, n: int) -> int:
         """
         Experimentally estimates number of elements of Fourier's sum needed to satisfy given precision.
         :param n: estimated with N(eps) n
         :param t: t
         :param epsilon: precision
         :param x_array: x
-        :param mu_array: roots of array of roots of sin(math.pi * n ) = 0
         :return: array of numer of elements in fourier sum accordingly for each t
         """
         i = n
-        while all([abs(self.u(x, t, mu_array[i - 1:i])) < epsilon for x in x_array]):
+        while all([abs(self.u(x, t, i) - self.u(x, t, i-1)) < epsilon for x in x_array]):
             i -= 1
 
         return i
-
-    def print_fourier_sum_with_all_mu(self, x: float, t: float, mu_array: [float]):
-        """
-        Prints Fourier's sum with different number of elements
-        :param x: x
-        :param t: t
-        :param mu_array: roots of array of roots of sin(math.pi * n ) = 0
-        :return: None
-        """
-        for i in range(1, len(mu_array)):
-            print(self.u(x, t, mu_array[:i]))
 
     def calculate(self):
         # estimate number of elements in fourier's sum
@@ -190,8 +161,6 @@ class Model:
 
         print("With given precision: " + str(self.__EPS))
         print_matrix([["T: "] + t_values, ["N: "] + n_array])
-
-        mu_array = calculate_mu_array_with_length(max(n_array))
 
         x = numpy.linspace(0, self.__L, 500)
         t = numpy.linspace(0, self.__T, 500)
@@ -206,20 +175,20 @@ class Model:
             current_n_min = self.estimate_n_min_for_single_t(epsilon, T_CHECK)
             n_min.append(str(current_n_min))
             n_exp.append(
-                str(self.estimate_experimental_n(epsilon, x, T_CHECK, mu_array, current_n_min)))
+                str(self.estimate_experimental_n(epsilon, x, T_CHECK, current_n_min)))
 
         print_matrix([eps_array, n_min, n_exp])
 
-        # for each t, x mu_array is reduced to satisfy given precision
+        # for each t, x number of elements is reduced to satisfy given precision
         y_array = []
-        for n, _t in zip(n_array, t_values):
-            y_array.append([self.u(_x, _t, mu_array[:n]) for _x in x])
+        for n1, _t1 in zip(n_array, t_values):
+            y_array.append([self.u(_x1, _t1, n1) for _x1 in x])
 
         plot1 = build_plot(x, y_array, t_values, x_label="x", y_label="U(x, t)", sections_label="t = ")
 
         t_array = []
-        for n, _x in zip(n_array, x_values):
-            t_array.append([self.u(_x, _t, mu_array[:n]) for _t in t])
+        for _x2 in x_values:
+            t_array.append([self.u(_x2, _t2, 100) for _t2 in t])
 
         plot2 = build_plot(t, t_array, x_values, x_label="t", y_label="U(x, t)", sections_label="x = ")
 
