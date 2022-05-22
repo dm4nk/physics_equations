@@ -1,6 +1,5 @@
 from math import pi, sin, cos, e
 
-import matplotlib.pyplot as plt
 import numpy
 import plotly.graph_objects as go
 
@@ -13,7 +12,7 @@ T_CHECK = 1
 
 def build_plot(x: [float], y_array: [[float]], sections: [float], x_label: [str], y_label: [str],
                sections_label: [str]) \
-        -> plt.Figure:
+        -> go.Figure:
     """
     Builds plot for given parameters
     :param y_array: y

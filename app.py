@@ -1,4 +1,5 @@
 import json
+import os
 
 import plotly
 from flask import Flask, render_template, request
@@ -35,4 +36,4 @@ def gm(d=0.06, l=12, t=150, e=0.01):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
