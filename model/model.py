@@ -1,7 +1,7 @@
 from math import pi, sin, cos, e
 
 import numpy
-import plotly.graph_objects as go
+from matplotlib import pyplot as plt
 
 H = 0
 U_c = 0
@@ -12,7 +12,7 @@ T_CHECK = 1
 
 def build_plot(x: [float], y_array: [[float]], sections: [float], x_label: [str], y_label: [str],
                sections_label: [str]) \
-        -> go.Figure:
+        -> plt.Figure:
     """
     Builds plot for given parameters
     :param y_array: y
@@ -22,36 +22,13 @@ def build_plot(x: [float], y_array: [[float]], sections: [float], x_label: [str]
     :param x: x
     :param sections: sections
     """
-    fig = go.Figure()
-    fig.update_layout(
-        xaxis=dict(
-            showgrid=False,
-            showticklabels=True,
-            linecolor='rgb(204, 204, 204)',
-            linewidth=2,
-            ticks='outside'
-        ),
-        yaxis=dict(
-            showgrid=False,
-            zeroline=False,
-            showticklabels=True,
-            linecolor='rgb(204, 204, 204)',
-            linewidth=2,
-            ticks='outside'
-        ),
-        autosize=True,
-        margin=dict(
-            autoexpand=True,
-            l=100,
-            r=100,
-            t=110,
-        ),
-        showlegend=True,
-        plot_bgcolor='white'
-    )
-    fig.update_layout(xaxis_title=x_label, yaxis_title=y_label)
+    fig = plt.figure()
+    ax = fig.add_subplot()
     for y, section in zip(y_array, sections):
-        fig.add_trace(go.Line(x=x, y=y, mode='lines', name=sections_label + str(section)))
+        ax.plot(x, y, label=sections_label + str(section))
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+    ax.legend()
 
     return fig
 
