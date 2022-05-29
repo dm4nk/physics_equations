@@ -177,7 +177,7 @@ class Model:
 
         plot2 = build_plot(t, t_array, x_values, x_label="t", y_label="U(x, t)", sections_label="x = ")
 
-        return plot1, plot2, t_values, n_array
+        return plot1, plot2, t_values[1:], n_array
 
     def estimate_n(self):
         x = numpy.linspace(0, self.__L, 500)

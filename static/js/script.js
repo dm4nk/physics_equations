@@ -48,7 +48,7 @@ submitBtn.addEventListener('click', function (event) {
             const tResult = result['t_array'];
 
             Array.from(tElements).forEach(function(value, index) {
-                value.innerHTML=tResult[index].toFixed(4);
+                value.innerHTML=tResult[index].toFixed(2);
             });
 
             const nElements = document.getElementsByClassName('amount');
