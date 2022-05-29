@@ -13,8 +13,8 @@ $.getJSON({
 const submitBtn = document.querySelector('.submit-btn');
 submitBtn.addEventListener('click', function (event) {
     const d = parseFloat(document.querySelector('#d').value);
-    const l = parseInt(document.querySelector('#l').value);
-    const t = parseInt(document.querySelector('#t').value);
+    const l = parseFloat(document.querySelector('#l').value);
+    const t = parseFloat(document.querySelector('#t').value);
     const e = parseFloat(document.querySelector('#e').value);
 
     if(d == null | l == null | t == null | e == null){
