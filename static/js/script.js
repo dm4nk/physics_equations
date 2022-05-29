@@ -48,14 +48,14 @@ submitBtn.addEventListener('click', function (event) {
             const tResult = result['t_array'];
 
             Array.from(tElements).forEach(function(value, index) {
-                value.innerHTML=tResult[index];
+                value.innerHTML=tResult[index].toFixed(4);
             });
 
             const nElements = document.getElementsByClassName('amount');
             const nResult = result['n_array'];
 
             Array.from(nElements).forEach(function(value, index) {
-                value.innerHTML=nResult[index];
+                value.innerHTML=nResult[index].toFixed(4);
             });
   
             submitBtn.disabled=false;
