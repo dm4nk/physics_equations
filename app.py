@@ -16,8 +16,8 @@ FILENAME = 'data/data.json'
 @app.route('/draw_plots', methods=['POST', 'GET'])
 def draw_plots():
     return gm(float(request.args.get('d')),
-              int(request.args.get('l')),
-              int(request.args.get('t')),
+              float(request.args.get('l')),
+              float(request.args.get('t')),
               float(request.args.get('e')))
 
 
@@ -33,7 +33,7 @@ def index():
     return render_template('index.html')
 
 
-def gm(d=0.06, l=12, t=150, e=0.01):
+def gm(d=0.06, l=12., t=150., e=0.01):
     print(d, l, t, e)
     md.set_params(d, l, t, e)
     fig1, fig2, t_array, n_array = md.build_plots()
