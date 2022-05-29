@@ -55,7 +55,7 @@ submitBtn.addEventListener('click', function (event) {
             const nResult = result['n_array'];
 
             Array.from(nElements).forEach(function(value, index) {
-                value.innerHTML=nResult[index].toFixed(4);
+                value.innerHTML=nResult[index];
             });
   
             submitBtn.disabled=false;
