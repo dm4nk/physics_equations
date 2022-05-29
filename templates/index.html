@@ -2,95 +2,72 @@
 <html>
 
 <head>
-    <style>
-        .invisible {
-            visibility: hidden;
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Equesions</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital@0;1&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-        function cb() {
-            console.log('START')
-            const d = parseFloat(document.querySelector('#d').value);
-            const l = parseInt(document.querySelector('#l').value);
-            const t = parseInt(document.querySelector('#t').value);
-            const e = parseFloat(document.querySelector('#e').value);
-            const loadings = document.querySelectorAll('.loading')
-            loadings.forEach(loading => loading.classList.remove('invisible'))
-            $.getJSON({
-                url: "/callback",
-                data: {
-                    'd': d,
-                    'l': l,
-                    't': t,
-                    'e': e
-                },
-                success: function (result) {
-                    Plotly.newPlot('chart', result['first'], {
-                        staticPlot: true
-                    });
-                    Plotly.newPlot('chart2', result['second'], {
-                        staticPlot: true
-                    });
-                    console.log('REFRESHED');
-                    loadings.forEach(loading => loading.classList.add('invisible'))
-                }
-            });
-        }
-    </script>
-    <title>Physics Equesions</title>
 </head>
 
-<body style="font-family:arial, sans-serif">
-
-    <div class="jumbotron text-center">
-        <h1>
-            <div class="spinner-grow text-primary loading" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-            Physics Equesions
-            <div class="spinner-grow text-primary loading" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </h1>
-        <p>Change value in fields to see changes</p>
+<body>
+    <div class="main-title">
+        <h2>physics equations</h2>
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-3">
-                <h2>D</h2><input class="form-control" type="text" value="0.06" id="d" name="d"
-                    onchange="cb()">
+    <div class="description">
+        <h5>diffusion process simulator</h5>
+    </div>
+
+    <div class="main-container">
+        <div class="container">
+            <div id="chart" class="chart"></div>
+            <div id="chart2" class="chart2"></div>
+        </div>
+        <div class="right-container">
+            <div class="container">
+                <form class="form" action="" id="form">
+                    <div class="input-control">
+                        <label for="d">D</label>
+                        <input type="number" value="0.06" step="0.0000001" id="d" name="d" required onkeypress="return event.charCode!=45">
+                        <h6>diffusion coefficient</h6>
+                    </div>
+                    <div class="input-control">
+                        <label for="l">L</label>
+                        <input type="number" value="12" id="l" name="l" required onkeypress="return event.charCode!=45">
+                        <h6>length of bar</h6>
+                    </div>
+                    <div class="input-control">
+                        <label for="t">T</label>
+                        <input type="number" value="150" id="t" name="t" required onkeypress="return event.charCode!=45">
+                        <h6>duration of process</h6>
+                    </div>
+                    <div class="input-control">
+                        <label for="e">E</label>
+                        <input type="number" value="0.01" step="0.0000001" id="e" name="e" required onkeypress="return event.charCode!=45">
+                        <h6>precision</h6>
+                    </div>
+                    <div class="input-control">
+                        <input class="submit-btn gradient-background" type="submit" value="Submit">
+                    </div>
+                </form>
             </div>
-            <div class="col-sm-3">
-                <h2>L</h2><input class="form-control" type="text" value="12" id="l" name="l" onchange="cb()">
-            </div>
-            <div class="col-sm-3">
-                <h2>T</h2><input class="form-control" type="text" value="150" id="t" name="t" onchange="cb()">
-            </div>
-            <div class="col-sm-3">
-                <h2>Precision</h2><input class="form-control" type="text" value="0.01" id="e" name="e"
-                    onchange="cb()">
+            <div class="container">
+                <table>
+                    <tr><td>T</td><td class="time">0.0001</td><td class="time">50</td><td class="time">100</td><td class="time">150</td></tr>
+                    <tr><td>N</td><td class="amount">2720</td><td class="amount">4</td><td class="amount">3</td><td class="amount">3</td></tr>
+                </table>
             </div>
         </div>
+        
     </div>
-
-    <div>
-        <div id="chart" class="chart"></div>
-        <div id="chart2" class="chart2"></div>
-    </div>
-
+    <p class="footer">Source code <a href="https://github.com/dm4nk/physics_equations">https://github.com/dm4nk/physics_equations</a></p>
 </body>
 
-<script>
-    data = {{graphJSON | safe}};
-    Plotly.newPlot('chart', data['first'], {});
-    Plotly.newPlot('chart2', data['second'], {});
-    const loadings = document.querySelectorAll('.loading')
-    loadings.forEach(loading => loading.classList.add('invisible'))
-</script>
+<script src="static/js/script.js"></script>
 
 </html>

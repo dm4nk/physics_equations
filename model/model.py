@@ -152,17 +152,35 @@ class Model:
 
         return i
 
-    def calculate(self):
+    def build_plots(self):
         # estimate number of elements in fourier's sum
         t_values = [MINIMAL_T, self.__T / 3, 2 * self.__T / 3, self.__T]
         x_values = [0, self.__L / 2, 2 * self.__L / 3, self.__L]
         n_array = self.estimate_n_min(self.__EPS, t_values)
 
         print("With given precision: " + str(self.__EPS))
-        print_matrix([["T: "] + t_values, ["N: "] + n_array])
+        matrix = [["T: "] + t_values, ["N: "] + n_array]
+        print_matrix(matrix)
 
         x = numpy.linspace(0, self.__L, 500)
         t = numpy.linspace(0, self.__T, 500)
+
+        y_array = []
+        for n1, _t1 in zip(n_array, t_values):
+            y_array.append([self.u(_x1, _t1, n1) for _x1 in x])
+
+        plot1 = build_plot(x, y_array, t_values, x_label="x", y_label="U(x, t)", sections_label="t = ")
+
+        t_array = []
+        for _x2 in x_values:
+            t_array.append([self.u(_x2, _t2, 100) for _t2 in t])
+
+        plot2 = build_plot(t, t_array, x_values, x_label="t", y_label="U(x, t)", sections_label="x = ")
+
+        return plot1, plot2, t_values, n_array
+
+    def estimate_n(self):
+        x = numpy.linspace(0, self.__L, 500)
 
         # check difference between n found by estimate_n_min and experimental one
         print("For t = " + str(T_CHECK))
@@ -179,16 +197,3 @@ class Model:
         print_matrix([eps_array, n_min, n_exp])
 
         # for each t, x number of elements is reduced to satisfy given precision
-        y_array = []
-        for n1, _t1 in zip(n_array, t_values):
-            y_array.append([self.u(_x1, _t1, n1) for _x1 in x])
-
-        plot1 = build_plot(x, y_array, t_values, x_label="x", y_label="U(x, t)", sections_label="t = ")
-
-        t_array = []
-        for _x2 in x_values:
-            t_array.append([self.u(_x2, _t2, 100) for _t2 in t])
-
-        plot2 = build_plot(t, t_array, x_values, x_label="t", y_label="U(x, t)", sections_label="x = ")
-
-        return plot1, plot2
