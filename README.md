@@ -11,6 +11,7 @@ To run locally:
 3. install everything from requirements.txt
 4. go to app.py in the root directory of the project
 5. press nice green arrow nex to number of row at the end of file
+6. go to http://127.0.0.1:5000
 
 Flask offers live reload. To enable such, add `debug=True` argument to app.run() method, so it would look like
 `
