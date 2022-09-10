@@ -8,7 +8,7 @@ from model.model import Model
 
 app = Flask(__name__)
 
-md = Model(0.06, 12, 150, 0.01)
+md = Model(0.06, 12, 150, 0.01, 500, 500)
 
 FILENAME = 'data/data.json'
 
@@ -18,7 +18,9 @@ def draw_plots():
     return gm(float(request.args.get('d')),
               float(request.args.get('l')),
               float(request.args.get('t')),
-              float(request.args.get('e')))
+              float(request.args.get('e')),
+              int(request.args.get('x')),
+              int(request.args.get('y')))
 
 
 @app.route('/basic', methods=['POST', 'GET'])
@@ -33,9 +35,9 @@ def index():
     return render_template('index.html')
 
 
-def gm(d=0.06, l=12., t=150., e=0.01):
-    print(d, l, t, e)
-    md.set_params(d, l, t, e)
+def gm(d=0.06, l=12., t=150., e=0.01, x=500, y=500):
+    print(d, l, t, e, x, y)
+    md.set_params(d, l, t, e, x, y)
     fig1, fig2, t_array, n_array = md.build_plots()
 
     graph_json = {'first': json.loads(json.dumps(fig1, cls=plotly.utils.PlotlyJSONEncoder)),

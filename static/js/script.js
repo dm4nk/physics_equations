@@ -16,8 +16,10 @@ submitBtn.addEventListener('click', function (event) {
     const l = parseFloat(document.querySelector('#l').value);
     const t = parseFloat(document.querySelector('#t').value);
     const e = parseFloat(document.querySelector('#e').value);
+    const x = parseFloat(document.querySelector('#x').value);
+    const y = parseFloat(document.querySelector('#y').value);
 
-    if(d == null | l == null | t == null | e == null){
+    if(d == null | l == null | t == null | e == null | x == null | y == null){
         alert("validation failed");
         return;
     }
@@ -34,7 +36,9 @@ submitBtn.addEventListener('click', function (event) {
             'd': d,
             'l': l,
             't': t,
-            'e': e
+            'e': e,
+            'x': x,
+            'y': y
         },
         success: function (result) {
             Plotly.newPlot('chart', result['first'], {

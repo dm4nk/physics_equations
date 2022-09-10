@@ -71,17 +71,21 @@ def print_matrix(matrix):
 
 class Model:
 
-    def __init__(self, D, L, T, EPS):
+    def __init__(self, D, L, T, EPS, X, Y):
         self.__D = D
         self.__L = L
         self.__T = T
         self.__EPS = EPS
+        self.__X = X
+        self.__Y = Y
 
-    def set_params(self, D, L, T, EPS):
+    def set_params(self, D, L, T, EPS, X, Y):
         self.__D = D
         self.__L = L
         self.__T = T
         self.__EPS = EPS
+        self.__X = X
+        self.__Y = Y
 
     def u(self, x: float, t: float, n: int) -> float:
         """
@@ -99,7 +103,7 @@ class Model:
                 cos(pi * k * x / self.__L) * \
                 sin(pi * k / 4) * \
                 cos(pi * k / 2)
-        return 4 * _sum + 1/2
+        return 4 * _sum + 1 / 2
 
     def f(self, n: int, t: float) -> float:
         """
@@ -147,7 +151,7 @@ class Model:
         :return: array of numer of elements in fourier sum accordingly for each t
         """
         i = n
-        while all([abs(self.u(x, t, i) - self.u(x, t, i-1)) < epsilon for x in x_array]):
+        while all([abs(self.u(x, t, i) - self.u(x, t, i - 1)) < epsilon for x in x_array]):
             i -= 1
 
         return i
@@ -156,14 +160,15 @@ class Model:
         # estimate number of elements in fourier's sum
         t_values = [MINIMAL_T, self.__T / 3, 2 * self.__T / 3, self.__T]
         x_values = [0, self.__L / 2, 2 * self.__L / 3, self.__L]
-        n_array = self.estimate_n_min(self.__EPS, t_values)
+        n_array = [int(self.__EPS)] * len(t_values) if self.__EPS.is_integer() \
+            else self.estimate_n_min(self.__EPS, t_values)
 
         print("With given precision: " + str(self.__EPS))
         matrix = [["T: "] + t_values, ["N: "] + n_array]
         print_matrix(matrix)
 
-        x = numpy.linspace(0, self.__L, 500)
-        t = numpy.linspace(0, self.__T, 500)
+        x = numpy.linspace(0, self.__L, self.__X)
+        t = numpy.linspace(0, self.__T, self.__Y)
 
         y_array = []
         for n1, _t1 in zip(n_array, t_values):
