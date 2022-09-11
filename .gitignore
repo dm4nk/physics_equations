@@ -155,4 +155,4 @@ vk_config.v2.json
 *.css.map
 *.sass.map
 *.scss.map
-*.styles.css
+*.css
