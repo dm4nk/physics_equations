@@ -46,27 +46,17 @@ class NewModel:
 
         u = np.zeros((K + 1, I + 1))
 
-        for i in range(0, I):
+        for i in range(0, I + 1):
             u[0][i] = self.psi(x[i])
 
-        p_0 = 1
-        q_0 = 0
+        for k in range(0, K):
+            u[k][0] = u[k][1]
+            u[k][I] = u[k][I - 1]
+            for i in range(1, I):
+                u[k + 1][i] = u[k][i] + gamma * (u[k][i + 1] - 2 * u[k][i] + u[k][i - 1])
 
-        for k in range(1, K + 1):
-            p, q = np.zeros(I - 1), np.zeros(I - 1)
-            p[0] = p_0
-            q[0] = q_0 * u[k - 1][0]
-
-            for i in range(1, I - 1):
-                d = (1 + (2 - p[i - 1]) * gamma)
-                p[i] = gamma / d
-                q[i] = (u[k - 1][i] + gamma * q[i - 1]) / d
-
-            d = 1 + gamma - gamma * p[I - 2]
-            u[k][I] = u[k][I - 1] = (u[k - 1][I - 1] + gamma * q[I - 2]) / d
-
-            for i in range(I - 2, -1, -1):
-                u[k][i] = p[i] * u[k][i + 1] + q[i]
+        u[K][0] = u[K][1]
+        u[K][I] = u[K][I - 1]
 
         return u
 
