@@ -15,17 +15,21 @@ def build_plot(x: [float], new_y_arrays: [[float]], sections: [float], x_label: 
     fig = go.Figure()
     fig.update_layout(
         xaxis=dict(
-            showgrid=False,
+            showgrid=True,
+            showline=False,
             showticklabels=True,
             linecolor='rgb(204, 204, 204)',
+            gridcolor='rgb(204, 204, 204)',
             linewidth=2,
             ticks='outside'
         ),
         yaxis=dict(
-            showgrid=False,
+            showgrid=True,
+            showline=False,
             zeroline=False,
             showticklabels=True,
             linecolor='rgb(204, 204, 204)',
+            gridcolor='rgb(204, 204, 204)',
             linewidth=2,
             ticks='outside'
         ),
