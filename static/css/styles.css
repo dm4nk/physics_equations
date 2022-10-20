@@ -55,10 +55,6 @@ body {
   box-shadow: 1px 2px 15px rgba(0, 0, 0, 0.1);
   height: fit-content;
 }
-.main-container .container .form {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
 .main-container .container .form .two-cols {
   display: grid;
   grid-template-columns: 1fr 1fr;

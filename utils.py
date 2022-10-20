@@ -1,13 +1,12 @@
 import plotly.graph_objects as go
 
 
-def build_plot(x: [float], old_y_arrays: [float], new_y_arrays: [[float]], sections: [float], x_label: [str],
+def build_plot(x: [float], new_y_arrays: [[float]], sections: [float], x_label: [str],
                sections_label: [str]) \
         -> go.Figure:
     """
     Builds plot for given parameters
-    :param new_y_arrays: y calculated with new model
-    :param old_y_arrays: y calculated with old model
+    :param new_y_arrays: y calculated with model
     :param sections_label:
     :param x_label:
     :param x: x from
@@ -41,13 +40,9 @@ def build_plot(x: [float], old_y_arrays: [float], new_y_arrays: [[float]], secti
         plot_bgcolor='white'
     )
     fig.update_layout(xaxis_title=x_label, yaxis_title="U(x, t)")
-    for old_y, new_y, section in zip(old_y_arrays, new_y_arrays, sections):
+    for new_y, section in zip(new_y_arrays, sections):
         fig.add_trace(
-            go.Line(x=x, y=new_y, mode='lines', name=sections_label + str(section))
-        )
-
-        fig.add_trace(
-            go.Scatter(x=x, y=old_y, name=sections_label + str(section), line=dict(width=4, dash='dash'))
+            go.Line(x=x, y=new_y, mode='lines', name=sections_label + "{:10.1f}".format(section))
         )
 
     return fig

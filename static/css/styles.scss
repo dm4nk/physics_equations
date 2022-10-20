@@ -60,9 +60,6 @@ body {
     height: fit-content;
 
     .form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-
       .two-cols {
         display: grid;
         grid-template-columns: 1fr 1fr;
