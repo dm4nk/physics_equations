@@ -44,26 +44,26 @@ class NewModel:
 
         gamma = D * ht / (hx ** 2)
 
-        p, q, u = np.full(I, -10.), np.full(I, -10.), np.full((K + 1, I + 1), -10.)
+        u = np.zeros((K + 1, I + 1))
 
-        for i in range(0, I + 1):
+        for i in range(0, I):
             u[0][i] = self.psi(x[i])
 
-        p[0] = 2 * gamma / (2 * gamma + 1)
-        for i in range(1, I):
-            p[i] = gamma / (1 + (2 - p[i - 1]) * gamma)
+        p_0 = 1
+        q_0 = 0
 
         for k in range(1, K + 1):
+            p, q = np.zeros(I - 1), np.zeros(I - 1)
+            p[0] = p_0
+            q[0] = q_0 * u[k - 1][0]
 
-            q = np.full(I, -10.)
-            q[0] = u[k - 1][0] / (2 * gamma + 1)
-            for i in range(1, I):
-                q[i] = (u[k - 1][i] + gamma * q[i - 1]) / (1 + (2 - p[i - 1]) * gamma)
+            for i in range(1, I - 1):
+                d = (1 + (2 - p[i - 1]) * gamma)
+                p[i] = gamma / d
+                q[i] = (u[k - 1][i] + gamma * q[i - 1]) / d
 
-            numerator = u[k - 1][I - 1] + gamma * (u[k - 1][I] / (2 * gamma + 1) + q[I - 2])
-            divider = 1 + gamma * (2 - 2 * gamma / (2 * gamma + 1) - p[I - 2])
-            u[k][I - 1] = numerator / divider
-            u[k][I] = 2 * gamma / (2 * gamma + 1) * u[k][I - 1] + 1 / (2 * gamma + 1) * u[k - 1][I]
+            d = 1 + gamma - gamma * p[I - 2]
+            u[k][I] = u[k][I - 1] = (u[k - 1][I - 1] + gamma * q[I - 2]) / d
 
             for i in range(I - 2, -1, -1):
                 u[k][i] = p[i] * u[k][i + 1] + q[i]
