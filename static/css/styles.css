@@ -45,7 +45,7 @@ body {
 .main-container {
   margin: 1.5rem;
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 4fr 1fr;
 }
 .main-container .container {
   background-color: var(--color-white);
