@@ -49,6 +49,9 @@ submitBtn.addEventListener('click', function (event) {
             submitBtn.disabled = false;
             submitBtn.classList.add('gradient-background');
             console.log('REFRESHED');
+        },
+        error: function (result) {
+            alert("Bad parameters. Try again");
         }
     });
 });
