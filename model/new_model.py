@@ -16,54 +16,71 @@ def build_slices(u, arr, values, label):
 
 
 class NewModel:
-    def __init__(self, D=0.06, L=12, T=150, x=[], t=[], x_values=[], t_values=[]):
-        self.__D = D
-        self.__L = L
+    def __init__(self, C=2.64, R=3, T=80, K=0.13, A=0.002, L=0.5, x=[], t=[], x_values=[], t_values=[]):
+        self.__C = C
+        self.__R = R
         self.__T = T
-        self.__x = x
+        self.__K = K
+        self.__A = A
+        self.__L = L
+
+        self.__r = x
         self.__t = t
+
         self.__x_values = x_values
         self.__t_values = t_values
 
-    def set_parameters(self, D=0.06, L=12, T=150, x=[], t=[], x_values=[], t_values=[]):
-        self.__D = D
-        self.__L = L
+    def set_parameters(self, C=2.64, R=3, T=80, K=0.13, A=0.002, L=0.5, x=[], t=[], x_values=[], t_values=[]):
+        self.__C = C
+        self.__R = R
         self.__T = T
-        self.__x = x
+        self.__K = K
+        self.__A = A
+        self.__L = L
+
+        self.__r = x
         self.__t = t
+
         self.__x_values = x_values
         self.__t_values = t_values
 
-    def psi(self, x) -> float:
-        return 1 if self.__L / 4 < x < 3 * self.__L / 4 else 0
+    def psi(self, ri) -> float:
+        if 0.0 <= ri <= 3.0 / 5.0:
+            return 180.0
+        else:
+            return 0.0
 
-    def implicit_solution(self, x: [float], t: [float], D: float, ) -> [[float]]:
-        I, K = len(x) - 1, len(t) - 1
-        hx = x[1] - x[0]
+    def implicit_solution(self, r: [float], t: [float], c: float, k: float, a: float, l: float) -> [[float]]:
+        I, K = len(r) - 1, len(t) - 1
+        hr = r[1] - r[0]
         ht = t[1] - t[0]
+        gamma = k * ht / (c * hr ** 2)
+        betta = 2.0 * a * ht / (l * c)
+        alpha_0 = 1.0 + 4.0 * gamma + betta
+        alpha = 1.0 + 2.0 * gamma + betta
 
-        gamma = D * ht / (hx ** 2)
+        u = np.zeros((K + 1, I + 1))
 
-        p, q, u = np.full(I, -10.), np.full(I, -10.), np.full((K + 1, I + 1), -10.)
+        for i in range(0, I):
+            u[0][i] = self.psi(r[i])
 
-        for i in range(0, I + 1):
-            u[0][i] = self.psi(x[i])
-
-        p[0] = 2 * gamma / (2 * gamma + 1)
-        for i in range(1, I):
-            p[i] = gamma / (1 + (2 - p[i - 1]) * gamma)
+        p_0 = 4.0 * gamma / alpha_0
+        q_0 = 1.0 / alpha_0
 
         for k in range(1, K + 1):
+            p, q = np.zeros(I - 1), np.zeros(I - 1)
+            p[0] = p_0
+            q[0] = q_0 * u[k - 1][0]
 
-            q = np.full(I, -10.)
-            q[0] = u[k - 1][0] / (2 * gamma + 1)
-            for i in range(1, I):
-                q[i] = (u[k - 1][i] + gamma * q[i - 1]) / (1 + (2 - p[i - 1]) * gamma)
+            for i in range(1, I - 1):
+                e = 1.0 - hr / r[i]
+                d = alpha - gamma * hr / r[i] - gamma * p[i - 1] * e
+                p[i] = gamma / d
+                q[i] = (u[k - 1][i] + gamma * q[i - 1] * e) / d
 
-            numerator = u[k - 1][I - 1] + gamma * (u[k - 1][I] / (2 * gamma + 1) + q[I - 2])
-            divider = 1 + gamma * (2 - 2 * gamma / (2 * gamma + 1) - p[I - 2])
-            u[k][I - 1] = numerator / divider
-            u[k][I] = 2 * gamma / (2 * gamma + 1) * u[k][I - 1] + 1 / (2 * gamma + 1) * u[k - 1][I]
+            e = 1.0 - hr / r[I - 1]
+            d = alpha - gamma * hr / r[I - 1] - gamma * p[I - 2] * e
+            u[k][I - 1] = (u[k - 1][I - 1] + gamma * q[I - 2] * e) / d
 
             for i in range(I - 2, -1, -1):
                 u[k][i] = p[i] * u[k][i + 1] + q[i]
@@ -71,9 +88,9 @@ class NewModel:
         return u
 
     def build_plot(self):
-        v = self.implicit_solution(self.__x, self.__t, self.__D)
-        return build_slices(v, self.__t, self.__t_values, 'x'), build_slices(v, self.__x, self.__x_values, 't')
+        v = self.implicit_solution(r=self.__r, t=self.__t, c=self.__C, k=self.__K, a=self.__A, l=self.__L)
+        return build_slices(v, self.__t, self.__t_values, 'x'), build_slices(v, self.__r, self.__x_values, 't')
 
-    def set_end_bild(self, D, L, T, X, Y, X_VALS, T_VALS):
-        self.set_parameters(D, L, T, X, Y, X_VALS, T_VALS)
+    def set_end_bild(self, C, R, T, K, A, L, X, Y, X_VALS, T_VALS):
+        self.set_parameters(C=C, R=R, T=T, K=K, A=A, L=L, x=X, t=Y, x_values=X_VALS, t_values=T_VALS)
         return self.build_plot()
